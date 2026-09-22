@@ -302,19 +302,30 @@ h1, h2, h3 { line-height: 1.25; }
 /* O tempo é o número que mais muda: ganha um pouco de destaque. */
 #contador-tempo { color: var(--destaque); }
 
-/* No telefone os quatro contadores viram uma grade de dois, sempre legível. */
+/* A versão curta dos rótulos só existe no telefone. */
+.so-telefone { display: none; }
+
+/*
+ * No telefone o cabeçalho encolhe: título menor e os quatro contadores lado a
+ * lado com rótulo curto, para sobrar tela para a carta e para a folha.
+ */
 @media (max-width: 560px) {
-  .barra-placar { padding: .6rem .75rem; gap: .6rem; }
-  .titulo-pequeno { font-size: 1rem; flex: 1 1 100%; }
+  .so-tela-larga { display: none; }
+  .so-telefone { display: inline; }
+
+  .barra-placar { padding: .5rem .7rem; gap: .35rem; }
+  .titulo-pequeno { font-size: .9rem; flex: 1 1 100%; }
   .contadores {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: .4rem .75rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0 .5rem;
     width: 100%;
   }
   .contadores div { text-align: left; }
-  .contadores dt { font-size: .65rem; }
+  .contadores dt { font-size: .62rem; letter-spacing: .03em; }
   .contadores dd { font-size: .95rem; }
+  .carta-interna { min-height: 160px; }
+  .pergunta { font-size: 1.1rem; }
 }
 
 /* Resumo da partida na tela final. */
@@ -353,6 +364,17 @@ h1, h2, h3 { line-height: 1.25; }
   .area-folha { order: 3; }
 }
 
+/*
+ * Telefone deitado: sobra largura e falta altura, então a mesa volta para duas
+ * colunas, com a folha de um lado e a carta e os jogadores do outro.
+ */
+@media (max-width: 860px) and (min-width: 600px) and (max-height: 520px) {
+  .mesa { grid-template-columns: minmax(0, 1fr) minmax(240px, 300px); }
+  .coluna-lateral { display: grid; }
+  .area-carta, .area-jogadores, .area-folha { order: initial; }
+  .carta-interna { min-height: 140px; }
+}
+
 .coluna-lateral { display: grid; gap: 1.25rem; }
 
 .moldura-folha {
@@ -371,7 +393,19 @@ h1, h2, h3 { line-height: 1.25; }
 
 /* ======================= A FOLHA (SVG) ======================= */
 
-.folha { display: block; width: 100%; height: auto; touch-action: manipulation; }
+/*
+ * A folha nunca passa da altura da tela: sem isso, num telefone deitado ela
+ * ficaria mais alta que a janela e só daria para ver o desenho pela metade.
+ * O SVG tem viewBox, então ele encolhe inteiro e os pontos continuam no lugar.
+ */
+.folha {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  max-height: 70dvh;
+  touch-action: manipulation;
+}
 
 .guia {
   stroke: var(--guia);

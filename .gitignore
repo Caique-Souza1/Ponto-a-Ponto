@@ -1,3 +1,6 @@
 # Nada de dependências aqui: o jogo é HTML, CSS e JS puros.
 .DS_Store
 Thumbs.db
+
+# Pasta de trabalho da CLI do Vercel.
+.vercel

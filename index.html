@@ -76,11 +76,18 @@
   <main id="tela-jogo" class="tela" hidden>
     <header class="barra-placar">
       <h1 class="titulo-pequeno">Ponto a Ponto</h1>
+      <!-- Os rótulos têm uma versão curta, que é a que aparece no telefone. -->
       <dl class="contadores">
         <div><dt>Tempo</dt><dd id="contador-tempo">0:00</dd></div>
         <div><dt>Rodada</dt><dd id="contador-rodada">1</dd></div>
-        <div><dt>Cartas restantes</dt><dd id="contador-cartas">0</dd></div>
-        <div><dt>Ligações feitas</dt><dd id="contador-linhas">0</dd></div>
+        <div>
+          <dt><span class="so-tela-larga">Cartas restantes</span><span class="so-telefone">Cartas</span></dt>
+          <dd id="contador-cartas">0</dd>
+        </div>
+        <div>
+          <dt><span class="so-tela-larga">Ligações feitas</span><span class="so-telefone">Ligações</span></dt>
+          <dd id="contador-linhas">0</dd>
+        </div>
       </dl>
     </header>
 
