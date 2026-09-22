@@ -141,6 +141,11 @@ Dá para jogar só pelo teclado: `Tab` anda pelos botões e pelos pontos dispon�
 
 ## Trocar o baralho de perguntas
 
+São 107 cartas: conhecimento geral mais 12 perguntas de cada um destes temas —
+matemática, lógica de programação, programação orientada a objetos, física e
+línguas (inglês, português e espanhol) —, sempre 4 fáceis, 4 médias e 4 difíceis
+por tema.
+
 O baralho fica em `dados/perguntas.json`, uma lista de objetos:
 
 ```json
