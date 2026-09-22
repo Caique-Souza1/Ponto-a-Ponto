@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ponto a Ponto</title>
+  <meta name="description" content="Jogo de perguntas com desenho, para 2 a 5 jogadores em volta de uma tela só.">
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+  <!-- Aviso que só aparece quando os arquivos da pasta dados/ não puderam ser lidos. -->
+  <p id="aviso-reserva" class="aviso" hidden></p>
+
+  <!-- ==================== TELA DE NOVA PARTIDA ==================== -->
+  <main id="tela-nova" class="tela">
+    <header class="cabecalho-jogo">
+      <h1>Ponto a Ponto</h1>
+      <p class="subtitulo">Perguntas, pontos e um desenho que aparece aos poucos.</p>
+    </header>
+
+    <form id="form-nova" class="cartao">
+      <fieldset class="campo">
+        <legend>Quantos jogadores?</legend>
+        <div class="escolha-numero" id="escolha-quantidade" role="radiogroup" aria-label="Quantidade de jogadores">
+          <!-- Botões de 2 a 5 criados pela interface. -->
+        </div>
+      </fieldset>
+
+      <fieldset class="campo">
+        <legend>Quem vai jogar</legend>
+        <ul id="lista-cadastro" class="lista-cadastro"><!-- Preenchida pela interface. --></ul>
+      </fieldset>
+
+      <fieldset class="campo">
+        <legend>A pontuação pode ficar negativa?</legend>
+        <div class="opcoes-empilhadas">
+          <label class="opcao">
+            <input type="radio" name="negativo" value="sim" checked>
+            <span>
+              <strong>Pode ficar negativa</strong>
+              <small>Quem erra desce do zero para baixo.</small>
+            </span>
+          </label>
+          <label class="opcao">
+            <input type="radio" name="negativo" value="nao">
+            <span>
+              <strong>Para no zero</strong>
+              <small>Quem erra nunca fica com menos de zero ponto.</small>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <p id="erro-nova" class="erro" role="alert" hidden></p>
+
+      <button type="submit" class="botao botao-principal">Começar a partida</button>
+    </form>
+
+    <section class="cartao resumo-regras">
+      <h2>Como funciona</h2>
+      <ol>
+        <li>Uma carta é puxada e mostra a pergunta e a dificuldade.</li>
+        <li>Cada jogador escolhe responder ou passar. Quem passou na rodada anterior é obrigado a responder.</li>
+        <li>A carta vira e todos conferem entre si quem acertou.</li>
+        <li>Fácil vale 1 ponto, média 2 e difícil 3 — para mais no acerto, para menos no erro.</li>
+        <li>Cada acerto dá direito a ligar dois pontos da folha, sempre onde existe linha-guia.</li>
+        <li>Acaba quando o desenho fica pronto ou as cartas terminam. Vence quem tiver mais pontos.</li>
+      </ol>
+    </section>
+  </main>
+
+  <!-- ==================== TELA DE JOGO ==================== -->
+  <main id="tela-jogo" class="tela" hidden>
+    <header class="barra-placar">
+      <h1 class="titulo-pequeno">Ponto a Ponto</h1>
+      <dl class="contadores">
+        <div><dt>Rodada</dt><dd id="contador-rodada">1</dd></div>
+        <div><dt>Cartas restantes</dt><dd id="contador-cartas">0</dd></div>
+        <div><dt>Ligações feitas</dt><dd id="contador-linhas">0</dd></div>
+      </dl>
+    </header>
+
+    <div class="mesa">
+      <section class="area-folha" aria-labelledby="titulo-folha">
+        <h2 id="titulo-folha" class="rotulo">A folha</h2>
+        <div id="folha" class="moldura-folha"><!-- SVG criado pela interface. --></div>
+      </section>
+
+      <div class="coluna-lateral">
+        <section class="area-carta" aria-labelledby="titulo-carta">
+          <h2 id="titulo-carta" class="rotulo">A carta</h2>
+          <div id="carta" class="carta">
+            <div class="carta-interna">
+              <div class="carta-face carta-frente">
+                <span id="carta-dificuldade" class="selo">Fácil</span>
+                <p id="carta-pergunta" class="pergunta"></p>
+              </div>
+              <div class="carta-face carta-verso">
+                <span class="selo selo-resposta">Resposta</span>
+                <p id="carta-resposta" class="resposta"></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="area-jogadores" aria-labelledby="titulo-jogadores">
+          <h2 id="titulo-jogadores" class="rotulo">Jogadores</h2>
+          <ul id="lista-jogadores" class="lista-jogadores"><!-- Preenchida pela interface. --></ul>
+        </section>
+      </div>
+    </div>
+
+    <!-- Barra fixa com a instrução do momento e o botão principal. -->
+    <div class="barra-acao">
+      <p id="instrucao" class="instrucao" role="status" aria-live="polite"></p>
+      <p id="recado" class="recado" role="alert" hidden></p>
+      <button type="button" id="botao-principal" class="botao botao-principal"></button>
+    </div>
+  </main>
+
+  <!-- ==================== TELA FINAL ==================== -->
+  <main id="tela-fim" class="tela" hidden>
+    <header class="cabecalho-jogo">
+      <h1>Fim de partida</h1>
+      <p id="motivo-fim" class="subtitulo"></p>
+    </header>
+
+    <section class="cartao">
+      <h2 id="anuncio-campeao" class="campeao"></h2>
+      <ol id="classificacao" class="classificacao"><!-- Preenchida pela interface. --></ol>
+    </section>
+
+    <section class="cartao">
+      <h2>Como ficou o desenho</h2>
+      <div id="folha-final" class="moldura-folha"><!-- SVG criado pela interface. --></div>
+    </section>
+
+    <button type="button" id="botao-nova-partida" class="botao botao-principal">Nova partida</button>
+  </main>
+
+  <script src="js/dados-reserva.js"></script>
+  <script src="js/estado.js"></script>
+  <script src="js/dados.js"></script>
+  <script src="js/desenho.js"></script>
+  <script src="js/interface.js"></script>
+  <script src="js/principal.js"></script>
+</body>
+</html>
