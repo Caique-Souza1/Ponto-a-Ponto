@@ -50,11 +50,22 @@
   /* O mesmo tempo escrito por extenso, para a tela final. */
   function tempoPorExtenso(milissegundos) {
     var total = Math.round(milissegundos / 1000);
-    var minutos = Math.floor(total / 60);
+    var horas = Math.floor(total / 3600);
+    var minutos = Math.floor(total / 60) % 60;
     var segundos = total % 60;
-    if (minutos === 0) return segundos + (segundos === 1 ? ' segundo' : ' segundos');
-    return minutos + (minutos === 1 ? ' minuto e ' : ' minutos e ') +
-      segundos + (segundos === 1 ? ' segundo' : ' segundos');
+
+    var partes = [];
+    if (horas > 0) partes.push(horas + (horas === 1 ? ' hora' : ' horas'));
+    if (minutos > 0) partes.push(minutos + (minutos === 1 ? ' minuto' : ' minutos'));
+    // Os segundos só aparecem sozinhos ou quando a partida foi curta.
+    if (segundos > 0 && horas === 0) {
+      partes.push(segundos + (segundos === 1 ? ' segundo' : ' segundos'));
+    }
+    if (partes.length === 0) return '0 segundo';
+
+    // "1 hora, 2 minutos e 5 segundos": vírgula entre as primeiras, "e" na última.
+    if (partes.length === 1) return partes[0];
+    return partes.slice(0, -1).join(', ') + ' e ' + partes[partes.length - 1];
   }
 
   /* ======================= TELA DE NOVA PARTIDA ======================= */
