@@ -26,13 +26,36 @@
   var MINIMO_JOGADORES = 2;
   var MAXIMO_JOGADORES = 5;
 
-  var dadosDoJogo = null;   // { perguntas, desenho }
+  var dadosDoJogo = null;   // { perguntas, desenhos }
   var estado = null;
   var folha = null;
   var pontoSelecionado = null;
   var quantidade = MINIMO_JOGADORES;
+  var relogio = null;       // o setInterval que faz o cronômetro andar
 
   function $(id) { return document.getElementById(id); }
+
+  /* Tempo em minutos e segundos, com as horas na frente quando passa de uma. */
+  function formatarTempo(milissegundos) {
+    var total = Math.floor(milissegundos / 1000);
+    var segundos = total % 60;
+    var minutos = Math.floor(total / 60) % 60;
+    var horas = Math.floor(total / 3600);
+    var doisDigitos = function (n) { return n < 10 ? '0' + n : String(n); };
+    return horas > 0
+      ? horas + ':' + doisDigitos(minutos) + ':' + doisDigitos(segundos)
+      : minutos + ':' + doisDigitos(segundos);
+  }
+
+  /* O mesmo tempo escrito por extenso, para a tela final. */
+  function tempoPorExtenso(milissegundos) {
+    var total = Math.round(milissegundos / 1000);
+    var minutos = Math.floor(total / 60);
+    var segundos = total % 60;
+    if (minutos === 0) return segundos + (segundos === 1 ? ' segundo' : ' segundos');
+    return minutos + (minutos === 1 ? ' minuto e ' : ' minutos e ') +
+      segundos + (segundos === 1 ? ' segundo' : ' segundos');
+  }
 
   /* ======================= TELA DE NOVA PARTIDA ======================= */
 
@@ -188,19 +211,45 @@
 
     var permitirNegativo = document.querySelector('input[name="negativo"]:checked').value === 'sim';
 
+    // O desenho da partida é sorteado agora e vale até o fim dela.
+    var desenho = dadosDoJogo.desenhos[Math.floor(Math.random() * dadosDoJogo.desenhos.length)];
+
     estado = regras.criarPartida({
       jogadores: jogadores,
       perguntas: dadosDoJogo.perguntas,
-      desenho: dadosDoJogo.desenho,
+      desenho: desenho,
       permitirNegativo: permitirNegativo
     });
 
     pontoSelecionado = null;
     faseMostrada = null;
-    folha = new global.PontoAPonto.Folha($('folha'), dadosDoJogo.desenho, escolherPonto);
+    folha = new global.PontoAPonto.Folha($('folha'), desenho, escolherPonto);
+    $('titulo-folha').textContent = desenho.nome ? 'A folha — ' + desenho.nome : 'A folha';
 
     trocarTela('tela-jogo');
+    iniciarRelogio();
     desenharJogo();
+  }
+
+  /* ======================= CRONÔMETRO ======================= */
+
+  /* Faz o tempo andar na tela de segundo em segundo. */
+  function iniciarRelogio() {
+    pararRelogio();
+    mostrarTempo();
+    relogio = window.setInterval(mostrarTempo, 1000);
+  }
+
+  function pararRelogio() {
+    if (relogio !== null) {
+      window.clearInterval(relogio);
+      relogio = null;
+    }
+  }
+
+  function mostrarTempo() {
+    if (!estado) return;
+    $('contador-tempo').textContent = formatarTempo(regras.duracao(estado));
   }
 
   /* ======================= TROCA DE TELAS ======================= */
@@ -527,6 +576,8 @@
   /* ======================= TELA FINAL ======================= */
 
   function desenharFim() {
+    // O cronômetro já parou junto com a partida; aqui ele só é mostrado.
+    pararRelogio();
     var classificacao = regras.classificacao(estado);
 
     $('motivo-fim').textContent = estado.motivoFim === 'desenho'
@@ -575,7 +626,16 @@
       lista.appendChild(item);
     });
 
+    // Resumo da partida: quanto tempo levou, quantas rodadas e quantas ligações.
+    $('tempo-final').textContent = tempoPorExtenso(regras.duracao(estado));
+    $('rodadas-final').textContent = String(estado.rodada);
+    $('linhas-final').textContent =
+      regras.linhasFeitas(estado) + ' de ' + estado.desenho.linhas.length;
+
     // A folha final, só para olhar.
+    $('titulo-folha-final').textContent = estado.desenho.nome
+      ? 'Como ficou o desenho: ' + estado.desenho.nome
+      : 'Como ficou o desenho';
     var folhaFinal = new global.PontoAPonto.Folha($('folha-final'), estado.desenho, function () {});
     folhaFinal.definirInterativa(false, []);
     folhaFinal.sincronizar(estado);
@@ -591,7 +651,7 @@
     if (dados.usandoReserva) {
       var aviso = $('aviso-reserva');
       aviso.textContent = 'Você abriu o jogo direto do arquivo, então o navegador não deixou ler a pasta ' +
-        'dados/. O jogo está usando a cópia embutida do baralho e do desenho. Para valer suas edições nos ' +
+        'dados/. O jogo está usando a cópia embutida do baralho e dos desenhos. Para valer suas edições nos ' +
         'arquivos JSON, rode um servidor local (veja o README).';
       aviso.hidden = false;
     }
@@ -599,6 +659,7 @@
     montarTelaNova();
     $('form-nova').addEventListener('submit', comecarPartida);
     $('botao-nova-partida').addEventListener('click', function () {
+      pararRelogio();
       estado = null;
       pontoSelecionado = null;
       mostrarRecado(null);

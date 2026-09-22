@@ -1,7 +1,8 @@
 /*
- * dados.js — carrega o baralho de perguntas e o desenho.
+ * dados.js — carrega o baralho de perguntas e os desenhos.
  *
- * Os arquivos de verdade são dados/perguntas.json e dados/desenho.json.
+ * Os arquivos de verdade são dados/perguntas.json e os desenhos listados em
+ * dados/desenhos.json (um deles é sorteado no começo de cada partida).
  * Só que, quando a gente abre o index.html direto do disco (endereço file://),
  * o navegador proíbe ler arquivos da pasta por segurança. Para o jogo funcionar
  * mesmo assim, existe uma cópia embutida em js/dados-reserva.js, usada só
@@ -56,31 +57,46 @@
   }
 
   /*
-   * Devolve { perguntas, desenho, usandoReserva }.
+   * Busca a lista de desenhos do manifesto e depois cada desenho dela.
+   * Devolve null se qualquer parte falhar, para cair na cópia de reserva.
+   */
+  function buscarDesenhos() {
+    return buscarArquivo('dados/desenhos.json').then(function (manifesto) {
+      if (!manifesto || !Array.isArray(manifesto.arquivos) || manifesto.arquivos.length === 0) {
+        return null;
+      }
+      return Promise.all(manifesto.arquivos.map(buscarArquivo)).then(function (desenhos) {
+        return desenhos.indexOf(null) === -1 ? desenhos : null;
+      });
+    });
+  }
+
+  /*
+   * Devolve { perguntas, desenhos, usandoReserva }.
    * usandoReserva = true significa que os .json não puderam ser lidos.
    */
   function carregar() {
     return Promise.all([
       buscarArquivo('dados/perguntas.json'),
-      buscarArquivo('dados/desenho.json')
+      buscarDesenhos()
     ]).then(function (resultados) {
       var perguntas = resultados[0];
-      var desenho = resultados[1];
+      var desenhos = resultados[1];
       var usandoReserva = false;
 
-      if (!perguntas || !desenho) {
+      if (!perguntas || !desenhos) {
         var reserva = global.PontoAPonto && global.PontoAPonto.reserva;
         if (!reserva) {
           throw new Error('Não foi possível ler os arquivos da pasta dados/ e não há cópia de reserva.');
         }
         perguntas = perguntas || reserva.perguntas;
-        desenho = desenho || reserva.desenho;
+        desenhos = desenhos || reserva.desenhos;
         usandoReserva = true;
       }
 
       return {
         perguntas: validarPerguntas(perguntas),
-        desenho: validarDesenho(desenho),
+        desenhos: desenhos.map(validarDesenho),
         usandoReserva: usandoReserva
       };
     });

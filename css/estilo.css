@@ -295,8 +295,44 @@ h1, h2, h3 { line-height: 1.25; }
   text-transform: uppercase;
   letter-spacing: .06em;
   color: var(--texto-fraco);
+  white-space: nowrap;
 }
 .contadores dd { margin: 0; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* O tempo é o número que mais muda: ganha um pouco de destaque. */
+#contador-tempo { color: var(--destaque); }
+
+/* No telefone os quatro contadores viram uma grade de dois, sempre legível. */
+@media (max-width: 560px) {
+  .barra-placar { padding: .6rem .75rem; gap: .6rem; }
+  .titulo-pequeno { font-size: 1rem; flex: 1 1 100%; }
+  .contadores {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .4rem .75rem;
+    width: 100%;
+  }
+  .contadores div { text-align: left; }
+  .contadores dt { font-size: .65rem; }
+  .contadores dd { font-size: .95rem; }
+}
+
+/* Resumo da partida na tela final. */
+.resumo-partida {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: .75rem;
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--borda);
+}
+.resumo-partida dt {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--texto-fraco);
+}
+.resumo-partida dd { margin: .15rem 0 0; font-weight: 700; }
 
 .mesa {
   display: grid;
@@ -388,6 +424,22 @@ h1, h2, h3 { line-height: 1.25; }
   stroke: var(--texto);
   stroke-width: .7;
   stroke-dasharray: 1 1;
+}
+
+/*
+ * No telefone o dedo é bem menos preciso que o ponteiro: os pontos que estão
+ * em jogo ganham uma área de toque maior. Os outros continuam clicáveis, só
+ * que menores, para o jogo ainda poder explicar por que a escolha não vale.
+ */
+@media (max-width: 700px) {
+  .ponto.disponivel .alvo, .ponto.selecionado .alvo { r: 6; }
+  .ponto.disponivel .marca { r: 3; }
+  .ponto.selecionado .marca { r: 3.4; }
+}
+
+/* A folha aproveita mais a largura da tela no telefone. */
+@media (max-width: 600px) {
+  .moldura-folha { padding: .4rem; }
 }
 
 /* ======================= A CARTA ======================= */

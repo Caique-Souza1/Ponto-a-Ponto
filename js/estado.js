@@ -60,7 +60,9 @@
       // ou o id do jogador que a fez.
       autorDaLinha: config.desenho.linhas.map(function () { return null; }),
       filaDeLigacoes: [],           // ids de quem ainda tem uma ligação para fazer
-      motivoFim: null
+      motivoFim: null,
+      comecouEm: Date.now(),        // marca o início para o cronômetro
+      terminouEm: null
     };
 
     iniciarRodada(estado);
@@ -271,6 +273,13 @@
     estado.fase = FASES.FIM;
     estado.motivoFim = motivo; // 'desenho' ou 'cartas'
     estado.filaDeLigacoes = [];
+    // O cronômetro para aqui e não anda mais.
+    if (estado.terminouEm === null) estado.terminouEm = Date.now();
+  }
+
+  /* Quanto tempo a partida já levou, em milissegundos. */
+  function duracao(estado) {
+    return (estado.terminouEm === null ? Date.now() : estado.terminouEm) - estado.comecouEm;
   }
 
   /*
@@ -309,6 +318,7 @@
     registrarLigacao: registrarLigacao,
     linhasFeitas: linhasFeitas,
     desenhoCompleto: desenhoCompleto,
+    duracao: duracao,
     classificacao: classificacao
   };
 })(window);

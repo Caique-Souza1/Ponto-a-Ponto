@@ -77,6 +77,7 @@
     <header class="barra-placar">
       <h1 class="titulo-pequeno">Ponto a Ponto</h1>
       <dl class="contadores">
+        <div><dt>Tempo</dt><dd id="contador-tempo">0:00</dd></div>
         <div><dt>Rodada</dt><dd id="contador-rodada">1</dd></div>
         <div><dt>Cartas restantes</dt><dd id="contador-cartas">0</dd></div>
         <div><dt>Ligações feitas</dt><dd id="contador-linhas">0</dd></div>
@@ -85,6 +86,7 @@
 
     <div class="mesa">
       <section class="area-folha" aria-labelledby="titulo-folha">
+        <!-- O texto recebe o nome do desenho sorteado para esta partida. -->
         <h2 id="titulo-folha" class="rotulo">A folha</h2>
         <div id="folha" class="moldura-folha"><!-- SVG criado pela interface. --></div>
       </section>
@@ -131,10 +133,15 @@
     <section class="cartao">
       <h2 id="anuncio-campeao" class="campeao"></h2>
       <ol id="classificacao" class="classificacao"><!-- Preenchida pela interface. --></ol>
+      <dl class="resumo-partida">
+        <div><dt>Tempo de jogo</dt><dd id="tempo-final">0:00</dd></div>
+        <div><dt>Rodadas jogadas</dt><dd id="rodadas-final">0</dd></div>
+        <div><dt>Ligações feitas</dt><dd id="linhas-final">0</dd></div>
+      </dl>
     </section>
 
     <section class="cartao">
-      <h2>Como ficou o desenho</h2>
+      <h2 id="titulo-folha-final">Como ficou o desenho</h2>
       <div id="folha-final" class="moldura-folha"><!-- SVG criado pela interface. --></div>
     </section>
 

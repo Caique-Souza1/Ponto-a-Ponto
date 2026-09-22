@@ -120,10 +120,19 @@
   Folha.prototype.destacar = function (selecionado, vizinhos) {
     this.pontoSelecionado = selecionado;
     var lista = vizinhos || [];
+    var svg = this.svg;
+    var emJogo = [];
+
     this.pontos.forEach(function (grupo, indice) {
+      var destacado = indice === selecionado || lista.indexOf(indice) !== -1;
       grupo.classList.toggle('selecionado', indice === selecionado);
       grupo.classList.toggle('disponivel', lista.indexOf(indice) !== -1);
+      if (destacado) emJogo.push(grupo);
     });
+
+    // No SVG não existe z-index: quem vem depois fica por cima. Os pontos em
+    // jogo vão para o fim da lista, para o dedo não acertar um vizinho colado.
+    emJogo.forEach(function (grupo) { svg.appendChild(grupo); });
   };
 
   /* Pinta uma ligação recém-feita com a cor do jogador. */
