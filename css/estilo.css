@@ -77,6 +77,9 @@ h1, h2, h3 { line-height: 1.25; }
   padding: 1.25rem 1rem 0;
 }
 
+/* A tela de nova partida e a final ficam numa coluna estreita, mais fácil de ler. */
+#tela-nova > *, #tela-fim > * { max-width: 680px; margin-inline: auto; }
+
 .cabecalho-jogo { text-align: center; margin: 1.5rem 0 2rem; }
 .cabecalho-jogo h1 { margin: 0; font-size: clamp(2rem, 6vw, 2.75rem); letter-spacing: -.02em; }
 .subtitulo { margin: .5rem 0 0; color: var(--texto-fraco); }
@@ -322,6 +325,12 @@ h1, h2, h3 { line-height: 1.25; }
   border-radius: var(--raio);
   box-shadow: var(--sombra);
   padding: .75rem;
+  transition: border-color var(--transicao), box-shadow var(--transicao);
+}
+/* Na hora de ligar, a folha se pinta com a cor de quem está desenhando. */
+.moldura-folha.vez-de-ligar {
+  border-color: var(--cor);
+  box-shadow: var(--sombra), 0 0 0 2px var(--cor);
 }
 
 /* ======================= A FOLHA (SVG) ======================= */

@@ -448,6 +448,12 @@
     var ligando = estado.fase === FASES.LIGACOES && !regras.rodadaEncerrada(estado);
     folha.sincronizar(estado);
 
+    // A moldura da folha veste a cor de quem está desenhando agora.
+    var moldura = $('folha');
+    var daVez = regras.jogadorDaVezDeLigar(estado);
+    moldura.classList.toggle('vez-de-ligar', ligando);
+    if (daVez) moldura.style.setProperty('--cor', daVez.cor);
+
     if (!ligando) {
       folha.definirInterativa(false, []);
       folha.destacar(null, []);
