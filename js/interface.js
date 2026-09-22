@@ -196,6 +196,7 @@
     });
 
     pontoSelecionado = null;
+    faseMostrada = null;
     folha = new global.PontoAPonto.Folha($('folha'), dadosDoJogo.desenho, escolherPonto);
 
     trocarTela('tela-jogo');
@@ -241,6 +242,26 @@
     desenharJogadores();
     desenharBarraDeAcao();
     ajustarFolha();
+    rolarParaOQueImporta();
+  }
+
+  // Guarda a fase mostrada por último, para saber quando a rodada virou de etapa.
+  var faseMostrada = null;
+
+  /*
+   * No celular, tudo fica empilhado: quando chega a hora de ligar os pontos,
+   * leva a tela até a folha; quando volta para a pergunta, leva até a carta.
+   */
+  function rolarParaOQueImporta() {
+    if (estado.fase === faseMostrada) return;
+    faseMostrada = estado.fase;
+
+    if (window.innerWidth > 860) return;
+
+    var ligando = estado.fase === FASES.LIGACOES && !regras.rodadaEncerrada(estado);
+    var alvo = ligando ? $('folha') : $('carta');
+    var suave = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    alvo.scrollIntoView({ block: 'center', behavior: suave ? 'smooth' : 'auto' });
   }
 
   function desenharJogadores() {
@@ -361,8 +382,8 @@
     var valor = regras.VALORES[carta.dificuldade];
 
     if (estado.fase === FASES.ESCOLHAS) {
-      instrucao.textContent = 'Leiam a pergunta. Cada jogador escolhe responder ou passar — ' +
-        'vale ' + valor + (valor === 1 ? ' ponto' : ' pontos') + ' no acerto e o mesmo tanto no erro.';
+      instrucao.textContent = 'Cada jogador escolhe responder ou passar. Vale +' + valor +
+        ' no acerto e −' + valor + ' no erro.';
       botao.textContent = 'Virar a carta';
       botao.disabled = !regras.todosEscolheram(estado);
       botao.onclick = function () {
@@ -404,7 +425,7 @@
       var daVez = regras.jogadorDaVezDeLigar(estado);
       var restantes = estado.filaDeLigacoes.length;
       instrucao.textContent = daVez.nome + ', ligue dois pontos da folha. ' +
-        (restantes > 1 ? 'Ainda faltam ' + restantes + ' ligações nesta rodada.' : 'É a última ligação da rodada.');
+        (restantes > 1 ? 'Faltam ' + restantes + ' ligações na rodada.' : 'É a última da rodada.');
 
       if (pontoSelecionado === null) {
         botao.textContent = 'Escolha um ponto na folha';

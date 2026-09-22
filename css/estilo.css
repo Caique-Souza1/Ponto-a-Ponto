@@ -205,6 +205,14 @@ h1, h2, h3 { line-height: 1.25; }
 .cadastro-jogador .campo-texto { grid-area: nome; }
 .cadastro-jogador .paleta { grid-area: paleta; }
 
+/* Em tela estreita, o nome fica em uma linha e as cores na linha de baixo. */
+@media (max-width: 620px) {
+  .cadastro-jogador {
+    grid-template-columns: 1fr;
+    grid-template-areas: "rotulo" "nome" "paleta";
+  }
+}
+
 .campo-texto {
   font: inherit;
   width: 100%;
@@ -293,8 +301,17 @@ h1, h2, h3 { line-height: 1.25; }
   gap: 1.25rem;
   align-items: start;
 }
+/*
+ * Em tela estreita a mesa vira uma coluna só, e a ordem muda: primeiro a
+ * carta e os jogadores, que é onde a rodada começa, e a folha por último.
+ * O jogo rola sozinho até a folha na hora de ligar os pontos.
+ */
 @media (max-width: 860px) {
   .mesa { grid-template-columns: 1fr; }
+  .coluna-lateral { display: contents; }
+  .area-carta { order: 1; }
+  .area-jogadores { order: 2; }
+  .area-folha { order: 3; }
 }
 
 .coluna-lateral { display: grid; gap: 1.25rem; }
@@ -470,9 +487,17 @@ h1, h2, h3 { line-height: 1.25; }
 .barra-acao .botao-principal { width: auto; flex: 0 0 auto; }
 
 @media (max-width: 600px) {
-  .barra-acao { flex-direction: column; align-items: stretch; gap: .6rem; }
-  .barra-acao .botao-principal { width: 100%; }
-  body { padding-bottom: 11rem; }
+  .barra-acao {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .5rem;
+    padding: .6rem .8rem;
+  }
+  /* Empilhada, a barra cresce para os lados, nunca para cima. */
+  .barra-acao .instrucao { flex: 0 0 auto; font-size: .9rem; }
+  .barra-acao .recado { flex: 0 0 auto; font-size: .85rem; }
+  .barra-acao .botao-principal { width: 100%; padding: .7rem 1rem; }
+  body { padding-bottom: 9.5rem; }
 }
 
 /* ======================= TELA FINAL ======================= */
